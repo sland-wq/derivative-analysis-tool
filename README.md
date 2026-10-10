@@ -1,59 +1,83 @@
-# derivative-analysis-tool
+import streamlit as st
 
-A full Python-based derivative analysis tool focused on option-style instruments. It calculates fair value, Greeks, scenario sensitivity, and generates a ready-to-use analyst prompt for a deeper market review.
+from src.derivative_analysis_tool import DerivativeInputs, analyze_derivative
 
-## Features
 
-- Black-Scholes pricing for option analysis
-- Delta, Gamma, Theta, Vega, and Rho calculations
-- Intrinsic value and time value analysis
-- Moneyness classification
-- Scenario grid analysis for spot changes
-- AI-friendly analysis prompt generation
-- JSON input/output support
+st.set_page_config(page_title="Derivative Analysis Tool", layout="wide")
+st.title("Derivative Analysis Web App")
+st.caption("Analyze option-style derivatives with fair value, Greeks, risk, and AI-ready insights.")
 
-## Project structure
+with st.form("derivative_form"):
+    col1, col2 = st.columns(2)
 
-- `src/derivative_analysis_tool.py` — main script with pricing and analysis logic
-- `src/__init__.py` — package exports
-- `prompts/derivative_analysis_prompt.txt` — reusable prompt template
-- `data/sample_inputs.json` — sample market input values
+    with col1:
+        underlying = st.text_input("Underlying", value="AAPL")
+        derivative_type = st.selectbox("Derivative Type", ["option", "future", "swap", "structured product", "other"])
+        option_style = st.selectbox("Option Style", ["European", "American", "Asian", "Barrier", "Binary", "Other"])
+        option_type = st.selectbox("Option Type", ["call", "put"])
+        spot = st.number_input("Spot", value=205.0, step=1.0)
+        strike = st.number_input("Strike", value=210.0, step=1.0)
 
-## Quick start
+    with col2:
+        expiry_days = st.number_input("Expiry Days", min_value=1, value=30)
+        risk_free_rate = st.number_input("Risk-free Rate", value=0.05, step=0.005, format="%.4f")
+        dividend_yield = st.number_input("Dividend Yield", value=0.01, step=0.001, format="%.4f")
+        volatility = st.number_input("Volatility", value=0.22, step=0.01, format="%.4f")
+        market_price = st.number_input("Market Price", value=3.25, step=0.05, format="%.4f")
+        contract_size = st.number_input("Contract Size", value=100.0, step=1.0)
+        market_context = st.text_area("Market Context", value="AI-driven earnings expectations and elevated volatility.")
 
-```bash
-python src/derivative_analysis_tool.py \
-  --underlying AAPL \
-  --derivative-type option \
-  --option-type call \
-  --spot 205 \
-  --strike 210 \
-  --expiry-days 30 \
-  --risk-free-rate 0.05 \
-  --dividend-yield 0.01 \
-  --volatility 0.22 \
-  --market-price 3.25 \
-  --contract-size 100
-```
+    submitted = st.form_submit_button("Analyze Derivative")
 
-Or use a JSON file:
+if submitted:
+    inputs = DerivativeInputs(
+        underlying=underlying,
+        derivative_type=derivative_type,
+        option_style=option_style,
+        option_type=option_type,
+        spot=float(spot),
+        strike=float(strike),
+        expiry_days=float(expiry_days),
+        risk_free_rate=float(risk_free_rate),
+        dividend_yield=float(dividend_yield),
+        volatility=float(volatility),
+        market_price=float(market_price),
+        contract_size=float(contract_size),
+        market_context=market_context,
+    )
 
-```bash
-python src/derivative_analysis_tool.py --input-file data/sample_inputs.json
-```
+    analysis = analyze_derivative(inputs)
 
-## Example outcome
+    st.subheader("Summary")
+    summary = analysis["summary"]
+    col_a, col_b, col_c, col_d = st.columns(4)
+    col_a.metric("Fair Value", f"{summary['fair_value']:.4f}")
+    col_b.metric("Market Price", f"{summary['market_price']:.4f}")
+    col_c.metric("Intrinsic", f"{summary['intrinsic_value']:.4f}")
+    col_d.metric("Time Value", f"{summary['time_value']:.4f}")
 
-The script prints:
+    st.write(f"Moneyness: {summary['moneyness']}")
+    st.write(f"Fair value gap: {summary['fair_value_gap']:.4f}")
 
-- fair value
-- market gap
-- intrinsic value and time value
-- Greeks
-- scenario matrix
-- risk summary
-- analyst prompt for deeper analysis
+    tab1, tab2, tab3, tab4 = st.tabs(["Greeks", "Scenarios", "Risk", "AI Prompt"])
 
-## Notes
+    with tab1:
+        greeks = analysis["greeks"]
+        st.json(greeks)
 
-This version is a stronger working prototype for derivative analysis and is designed to be extended with live option chain ingestion, strategy models, chart rendering, or a web interface.
+    with tab2:
+        scenarios = analysis["scenarios"]
+        st.json(scenarios)
+
+    with tab3:
+        st.json(analysis["risk_summary"])
+
+    with tab4:
+        st.text_area("AI Analysis Prompt", analysis["analysis_prompt"], height=420)
+
+    st.markdown("---")
+    st.subheader("Interpretation")
+    st.write(
+        "This tool estimates the option's theoretical fair value, highlights the primary Greek exposures, and produces a structured prompt for deeper qualitative analysis. "
+        "Use the scenario grid to understand how price moves and volatility shifts can affect the position."
+    )
