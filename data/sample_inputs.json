@@ -1,8 +1,4 @@
-from pathlib import Path
-
-root = Path(__file__).resolve().parent.parent
-
-SAMPLE = {
+{
   "underlying": "AAPL",
   "derivative_type": "option",
   "option_style": "European",
@@ -17,5 +13,3 @@ SAMPLE = {
   "contract_size": 100.0,
   "market_context": "AI earnings view and elevated volatility as traders price a large move."
 }
-
-# This file exists to support a sample JSON payload for the CLI.

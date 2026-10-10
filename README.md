@@ -1,26 +1,23 @@
 # derivative-analysis-tool
 
-A small Python-based derivatives analysis tool for options and structured derivative scenarios. It calculates Black-Scholes pricing metrics, Greeks, moneyness, and generates a polished derivative analysis prompt for AI-assisted review.
+A lightweight Python derivatives analysis tool for option-like instruments. It calculates fair value with Black-Scholes, derives key Greeks, classifies moneyness, and generates an AI-ready analysis prompt for deeper investment or risk review.
 
 ## Features
 
-- Option pricing and fair value estimation
-- Delta, Gamma, Theta, Vega, and Rho calculations
-- Moneyness classification
-- Intrinsic value and time value analysis
-- Scenario-ready prompt generation for deeper analysis
-- JSON output for automation and dashboards
+- Option pricing using Black-Scholes
+- Delta, Gamma, Theta, Vega, and Rho
+- Intrinsic and time value analysis
+- Moneyness classification (ITM / ATM / OTM)
+- AI prompt generation for analyst workflows
+- JSON sample inputs for quick testing
 
 ## Project structure
 
-- `src/derivative_analysis_tool.py` — main analysis engine
+- `src/derivative_analysis_tool.py` — analysis engine
 - `prompts/derivative_analysis_prompt.txt` — reusable prompt template
-- `data/sample_inputs.json` — sample values for quick testing
+- `data/sample_inputs.json` — example input values
 
 ## Quick start
-
-1. Clone the repo
-2. Run the tool:
 
 ```bash
 python src/derivative_analysis_tool.py \
@@ -37,30 +34,24 @@ python src/derivative_analysis_tool.py \
   --contract-size 100
 ```
 
-3. The script prints:
-   - a numeric pricing summary
-   - a prompt ready for a GPT-style derivative analyst
-
-## Example output
-
-The tool returns a structured dictionary including:
-
-- fair value
-- intrinsic value
-- time value
-- delta / gamma / theta / vega / rho
-- moneyness
-- estimated scenarios
-- AI prompt text
-
-## Sample input file
-
 You can also load a JSON file:
 
 ```bash
 python src/derivative_analysis_tool.py --input-file data/sample_inputs.json
 ```
 
+## Example output
+
+The tool prints a JSON summary including:
+
+- fair value
+- market gap
+- intrinsic value
+- time value
+- Greeks
+- moneyness
+- an AI analysis prompt
+
 ## Notes
 
-This is a lightweight starter project intended for analysis and education. For production use, you can extend it with live market data, option-chain ingestion, calibration, or a web UI.
+This is a clean starter implementation and is suitable for educational and prototype work. It is designed to be extended with live market data, option chains, or a user interface.
