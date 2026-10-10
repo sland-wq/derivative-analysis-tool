@@ -1,21 +1,23 @@
 # derivative-analysis-tool
 
-A lightweight Python derivatives analysis tool for option-like instruments. It calculates fair value with Black-Scholes, derives key Greeks, classifies moneyness, and generates an AI-ready analysis prompt for deeper investment or risk review.
+A full Python-based derivative analysis tool focused on option-style instruments. It calculates fair value, Greeks, scenario sensitivity, and generates a ready-to-use analyst prompt for a deeper market review.
 
 ## Features
 
-- Option pricing using Black-Scholes
-- Delta, Gamma, Theta, Vega, and Rho
-- Intrinsic and time value analysis
-- Moneyness classification (ITM / ATM / OTM)
-- AI prompt generation for analyst workflows
-- JSON sample inputs for quick testing
+- Black-Scholes pricing for option analysis
+- Delta, Gamma, Theta, Vega, and Rho calculations
+- Intrinsic value and time value analysis
+- Moneyness classification
+- Scenario grid analysis for spot changes
+- AI-friendly analysis prompt generation
+- JSON input/output support
 
 ## Project structure
 
-- `src/derivative_analysis_tool.py` — analysis engine
+- `src/derivative_analysis_tool.py` — main script with pricing and analysis logic
+- `src/__init__.py` — package exports
 - `prompts/derivative_analysis_prompt.txt` — reusable prompt template
-- `data/sample_inputs.json` — example input values
+- `data/sample_inputs.json` — sample market input values
 
 ## Quick start
 
@@ -34,24 +36,24 @@ python src/derivative_analysis_tool.py \
   --contract-size 100
 ```
 
-You can also load a JSON file:
+Or use a JSON file:
 
 ```bash
 python src/derivative_analysis_tool.py --input-file data/sample_inputs.json
 ```
 
-## Example output
+## Example outcome
 
-The tool prints a JSON summary including:
+The script prints:
 
 - fair value
 - market gap
-- intrinsic value
-- time value
+- intrinsic value and time value
 - Greeks
-- moneyness
-- an AI analysis prompt
+- scenario matrix
+- risk summary
+- analyst prompt for deeper analysis
 
 ## Notes
 
-This is a clean starter implementation and is suitable for educational and prototype work. It is designed to be extended with live market data, option chains, or a user interface.
+This version is a stronger working prototype for derivative analysis and is designed to be extended with live option chain ingestion, strategy models, chart rendering, or a web interface.
